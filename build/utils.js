@@ -3,6 +3,7 @@ const path = require('path')
 const config = require('../config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const packageConfig = require('../package.json')
+const glob = require('glob')
 
 exports.assetsPath = function (_path) {
   const assetsSubDirectory = process.env.NODE_ENV === 'production'
@@ -98,4 +99,20 @@ exports.createNotifierCallback = () => {
       icon: path.join(__dirname, 'logo.png')
     })
   }
+}
+
+/**
+ * 获取文件入口对像
+ * @author alex
+ * @param globPath 入口文件通用全路径
+ * @return 文件入口对像 {}
+ */
+exports.getEntries = function (globPath) {
+  let entries = {}
+  glob.sync(globPath).forEach((entry) => {
+    const pathArray = entry.split('/').splice(-3)
+    const fileName = pathArray[1]
+    entries[fileName] = entry
+  })
+  return entries
 }

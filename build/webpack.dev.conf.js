@@ -68,6 +68,19 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   ]
 })
 
+// 配置生成的html文件，定义路径等
+const rootDir = path.resolve(__dirname, '../')
+const entries = utils.getEntries(rootDir + '/.mpa/**/index.html')
+Object.keys(entries).forEach((pageName) => {
+  const pluginConf = {
+    filename: pageName + '.html',
+    template: entries[pageName],
+    chunks: [pageName, 'vendor', 'manifest'],
+    inject: true
+  }
+  devWebpackConfig.plugins.push(new HtmlWebpackPlugin(pluginConf))
+})
+
 module.exports = new Promise((resolve, reject) => {
   portfinder.basePort = process.env.PORT || config.dev.port
   portfinder.getPort((err, port) => {
@@ -93,3 +106,4 @@ module.exports = new Promise((resolve, reject) => {
     }
   })
 })
+
